@@ -3,7 +3,7 @@ const app = express();
 require("dotenv").config();
 const mongoose = require("mongoose");
 
-const userRoutes = require("./routes/user");
+const userRoutes = require("./routes/UserRoute");
 
 mongoose
   .connect(process.env.DATABASE, {
