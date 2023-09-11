@@ -25,3 +25,45 @@ exports.signup = async (req, res, next) => {
     });
   }
 };
+
+exports.signin = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Both e-mail and password cannot be blank.",
+      });
+    }
+
+    // Check if exists an user with email input
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid credentials.",
+      });
+    }
+
+    // Check if password input matches password on database
+    const passwordMatch = await user.comparePassword(password);
+    if (!passwordMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid credentials.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      success: false,
+      message: "Could not login. Please check your credentials.",
+    });
+  }
+};
